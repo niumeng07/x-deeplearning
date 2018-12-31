@@ -58,7 +58,10 @@ public class AppMasterRunner {
     String user = cmd.getOptionValue("user");
     String volumes = cmd.getOptionValue("volume");
 
+    LOG.info("====AppMasterRunner cmd.parse success, config {}, basePath {}, user {}, volumes {}.", config, basePath, user, volumes);
+
     SchedulerConf jobConf = Utils.parseSchedulerConf(config);
+    LOG.info("====AppMasterRunner jobConf, job_name {}, docker_image {}, script {}, dependent_dirs {}, scheduler_queue {}, min_finish_worker_num {}, min_finish_worker_rate {}, max_failover_times {}, max_local_failover_times {}, max_failover_wait_secs {}.", jobConf.job_name, jobConf.docker_image, jobConf.script, jobConf.dependent_dirs, jobConf.scheduler_queue, jobConf.min_finish_worker_num, jobConf.min_finish_worker_rate, jobConf.max_failover_times, jobConf.max_local_failover_times, jobConf.max_failover_wait_secs);
     boolean balance_enable = false;
     String meta_dir = null;
     if (jobConf.auto_rebalance != null) {
@@ -68,8 +71,10 @@ public class AppMasterRunner {
 
     AppMasterBase applicationMaster;
     if (balance_enable == false || Utils.existsHdfsFile(conf, meta_dir)) {
+      LOG.info("====AppMasterRunner applicationMaster is AppMasterBase.");
       applicationMaster = new AppMasterBase(basePath, user, config, volumes);
     } else {
+      LOG.info("====AppMasterRunner applicationMaster is PreAppMaster.");
       applicationMaster = new PreAppMaster(basePath, user, config, volumes);
     }
 
@@ -78,7 +83,10 @@ public class AppMasterRunner {
     Signal.handle(new Signal("INT"), signalHandler);
 
     try {
+      LOG.info("====AppMasterRunner call applicationMaster.run().");
       Status status = applicationMaster.run();
+      LOG.info("====AppMasterRunner call applicationMaster.run() returns {}.", status);
+      LOG.info("====AppMasterRunner call applicationMaster.dealWithExit({}).", status);
       applicationMaster.dealWithExit(status);
     } catch (Exception e) {
       LOG.error("run error!", e);

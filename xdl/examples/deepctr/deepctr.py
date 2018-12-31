@@ -1,3 +1,4 @@
+#-*-coding:utf8-*-
 # Copyright (C) 2016-2018 Alibaba Group Holding Limited
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +17,19 @@
 import tensorflow as tf
 import xdl
 
+#reader: 
+# enable_state=True use for failover when distribution training, should use with shell option task_num
+### failover will restart from last checkpoint.
 reader = xdl.DataReader("r1", # name of reader
                         paths=["./data.txt"], # file paths
                         enable_state=False) # enable reader state
 
+#format data
+#sampleid|groupid|sparse0@,,,|sparse1@,,,|deep0@,,,|label|timestamp
+#epochs
+#batch_size
+#threads
+#label_count
 reader.epochs(1).threads(1).batch_size(10).label_count(1)
 reader.feature(name='sparse0', type=xdl.features.sparse)\
     .feature(name='sparse1', type=xdl.features.sparse)\
@@ -33,11 +43,13 @@ def train():
     emb2 = xdl.embedding('emb2', batch['sparse1'], xdl.TruncatedNormal(stddev=0.001), 8, 1024, vtype='hash')
     loss = model(batch['deep0'], [emb1, emb2], batch['label'])
     train_op = xdl.SGD(0.5).optimize()
+    #train_op = xdl.Adam(0.01).optimize()
     log_hook = xdl.LoggerHook(loss, "loss:{0}", 10)
     sess = xdl.TrainSession(hooks=[log_hook])
     while not sess.should_stop():
         sess.run(train_op)
 
+#use tensorflow back_end to define a model.
 @xdl.tf_wrapper()
 def model(deep, embeddings, labels):
     input = tf.concat([deep] + embeddings, 1)
