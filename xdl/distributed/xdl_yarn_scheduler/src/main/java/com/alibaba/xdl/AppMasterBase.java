@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryOneTime;
@@ -57,7 +56,6 @@ import org.apache.hadoop.yarn.util.Apps;
 import org.apache.hadoop.yarn.util.Records;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.xdl.SchedulerConf.ExtendRoleResource;
 import com.alibaba.xdl.meta.MetaHandler;
@@ -112,6 +110,9 @@ public class AppMasterBase {
   public AppMasterBase(String basePath, String user, String config, String volumes) {
     this.schedulerConf = Utils.parseSchedulerConf(config);
     this.yarnConf = new YarnConfiguration();
+    this.yarnConf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+    this.yarnConf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
+
     this.basePath = basePath;
     this.config = config;
     this.xdlUser = user;
