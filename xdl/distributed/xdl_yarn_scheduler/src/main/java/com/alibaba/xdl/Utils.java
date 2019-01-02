@@ -239,6 +239,7 @@ public class Utils {
     FileSystem dfs = null;
     try {
       String userFs = dir.substring(0, dir.indexOf("/", dir.indexOf("//") + 2));
+      LOG.info("DEBUG: dir={}, userFs={}.", dir, userFs);
       FileSystem.setDefaultUri(conf, userFs);
       dfs = FileSystem.get(conf);
 
