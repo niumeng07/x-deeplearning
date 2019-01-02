@@ -1044,8 +1044,9 @@ public class AppMasterBase {
     RegisterApplicationMasterResponse response = rmClient.registerApplicationMaster("", 0,
         generateApplicationMasterWorkDir());
     maxResource = response.getMaximumResourceCapability();
-    LOG.info("ApplicationMaster max memory [{}] max cpu cores [{}] max gpu cores [{}]", maxResource.getMemorySize(),
-        maxResource.getVirtualCores(), maxResource.getResourceValue("yarn.io/gpu"));
+    //LOG.info("ApplicationMaster max memory [{}] max cpu cores [{}] max gpu cores [{}]", maxResource.getMemorySize(),
+    LOG.info("ApplicationMaster max memory [{}] max cpu cores [{}] max gpu cores []", maxResource.getMemorySize(),
+        maxResource.getVirtualCores()/*, maxResource.getResourceValue("yarn.io/gpu")*/);
     LOG.info("Register ApplicationMaster success.");
   }
 
