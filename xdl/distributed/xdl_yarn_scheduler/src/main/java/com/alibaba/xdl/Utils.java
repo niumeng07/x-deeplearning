@@ -241,6 +241,8 @@ public class Utils {
       String userFs = dir.substring(0, dir.indexOf("/", dir.indexOf("//") + 2));
       LOG.info("DEBUG: dir={}, userFs={}.", dir, userFs);
       FileSystem.setDefaultUri(conf, userFs);
+      conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+      conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
       dfs = FileSystem.get(conf);
 
       Path aucFile = new Path(dir);
