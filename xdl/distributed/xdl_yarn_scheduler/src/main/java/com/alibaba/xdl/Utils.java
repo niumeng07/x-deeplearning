@@ -146,13 +146,13 @@ public class Utils {
 
   public static void logFinalStatus(String appId, String status) {
     LOG.info("================================FINAL STATUS==================================");
-    LOG.info("{} : {} ", appId, status);
+    LOG.info("  {} : {} ", appId, status);
     LOG.info("================================FINAL STATUS==================================");
   }
 
   public static void restartLog(String message) {
     LOG.info("==================================================================================================");
-    LOG.info(message);
+    LOG.info("===" + message);
     LOG.info("==================================================================================================");
     System.out
         .println("==================================================================================================");
