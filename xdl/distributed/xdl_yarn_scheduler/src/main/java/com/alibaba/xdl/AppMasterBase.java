@@ -950,7 +950,7 @@ public class AppMasterBase {
   }
 
   public void dealWithExit(Status status) {
-    LOG.info("====dealWithExit({}).", status);
+    LOG.info("dealWithExit({}).", status);
     try {
       switch (status) {
       case KILLED:

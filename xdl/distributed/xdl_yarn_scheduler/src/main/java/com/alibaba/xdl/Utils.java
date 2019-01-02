@@ -59,7 +59,7 @@ public class Utils {
     if (!fs.exists(appStagePath)) {
       fs.mkdirs(appStagePath, permTemp);
       fs.setPermission(appStagePath, permTemp);
-      LOG.info("====Path:[{}] not exists, create success.", appStagePath);
+      LOG.info("Path:[{}] not exists, create success.", appStagePath);
     }
     return basePath;
   }
@@ -127,7 +127,7 @@ public class Utils {
       Process p = run.exec(cmdArr);
       p.waitFor();
       if (p.exitValue() == 0) {
-        LOG.info("====Run cmd [" + cmd + "] success.");
+        LOG.info("Run cmd [" + cmd + "] success.");
         return;
       } else {
         BufferedReader read = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -146,13 +146,13 @@ public class Utils {
 
   public static void logFinalStatus(String appId, String status) {
     LOG.info("================================FINAL STATUS==================================");
-    LOG.info("====  {} : {} ", appId, status);
+    LOG.info("{} : {} ", appId, status);
     LOG.info("================================FINAL STATUS==================================");
   }
 
   public static void restartLog(String message) {
     LOG.info("==================================================================================================");
-    LOG.info("====" + message);
+    LOG.info(message);
     LOG.info("==================================================================================================");
     System.out
         .println("==================================================================================================");
@@ -178,7 +178,7 @@ public class Utils {
       Path path = new Path(dir);
       if (dfs.exists(path)) {
         dfs.delete(path, true);
-        LOG.info("====Delete the hdfs dir:{} success.", dir);
+        LOG.info("Delete the hdfs dir:{} success.", dir);
       }
     } catch (IOException e) {
       e.printStackTrace();

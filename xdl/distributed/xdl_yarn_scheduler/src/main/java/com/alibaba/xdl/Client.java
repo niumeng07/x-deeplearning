@@ -116,11 +116,11 @@ public class Client {
     ApplicationSubmissionContext tmpContext = app.getApplicationSubmissionContext();
     //this.appId类型为ApplictionId
     this.appId = app.getApplicationSubmissionContext().getApplicationId();//getApplicationSubmissionContext 返回值为 ApplicationSubmissionContext 类型
-    LOG.info("====appId {}", appId.toString());
-    LOG.info("====Create application with id:[{}] success.", appId);
+    LOG.info("appId {}", appId.toString());
+    LOG.info("Create application with id:[{}] success.", appId);
 
     this.appBasePath = Utils.genAppBasePath(this.conf, appId.toString(), Utils.getCurUser());
-    LOG.info("====Application base path:[{}].", appBasePath);
+    LOG.info("Application base path:[{}].", appBasePath);
     this.uploadDependentFiles(appBasePath, this.dependentFiles);
 
     if (this.volumes.isEmpty()) {
@@ -128,32 +128,32 @@ public class Client {
     }
 
     String amStartCommand = genCmd(this.config, this.volumes, Utils.getCurUser(), appBasePath);
-    LOG.info("====amStartCommand: {}", amStartCommand);//Y
+    LOG.info("amStartCommand: {}", amStartCommand);//Y
 
     Map<String, LocalResource> resourceMap = setupResourceMap();
 
-    LOG.info("====local resources: {}", resourceMap); //Y
+    LOG.info("local resources: {}", resourceMap); //Y
 
     ContainerLaunchContext amContainer = setupApplicationMasterContainer(amStartCommand, resourceMap); // setupAppMasterEnv-> setupAppMasterEnv
     ApplicationSubmissionContext appContext = setupApplicationMasterContext(amContainer, app); // Setup application context success. LOG {Submitting application success.} //Y
-    LOG.info("====Submitting application {}", appId); //Y
+    LOG.info("Submitting application {}", appId); //Y
     // yarnClient.submitApplication 函数原型
     //public abstract ApplicationId submitApplication(ApplicationSubmissionContext appContext)
     //                                     throws YarnException,
     //                                            IOException
     try {
       ApplicationId appId_tmp = yarnClient.submitApplication(appContext); //yarnCliat: class org.apache.hadoop.yarn.client.api.YarnClient
-      LOG.info("====Submit application {} success, appId returnd {}.", appId, appId_tmp); // Y Success.
+      LOG.info("Submit application {} success, appId returnd {}.", appId, appId_tmp); // Y Success.
     } catch (Exception e) {
-        LOG.info("====Submit application {} failed, Exception {}.", appId, e);
+        LOG.info("Submit application {} failed, Exception {}.", appId, e);
     }
 
     FinalApplicationStatus appState = null;
     try {
       appState = waitApplicationFinish(yarnClient, appId);
-      LOG.info("====waitApplicationFinish success, appState {}.", appState); // wait success. appState false.
+      LOG.info("waitApplicationFinish success, appState {}.", appState); // wait success. appState false.
     } catch (Exception e) {
-        LOG.info("====waitApplicationFinish with Exception {}.", e);
+        LOG.info("waitApplicationFinish with Exception {}.", e);
     }
 
     return appState;
@@ -188,7 +188,7 @@ public class Client {
     Map<String, String> appMasterEnv = setupAppMasterEnv();
     amContainer.setEnvironment(appMasterEnv);
 
-    LOG.info("====Setup ApplicationMaster container success."); //Y
+    LOG.info("Setup ApplicationMaster container success."); //Y
 
     return amContainer;
   }
@@ -207,7 +207,7 @@ public class Client {
     appContext.setResource(capability);
     appContext.setQueue(this.schedulerConf.scheduler_queue);
 
-    LOG.info("====Setup application context success."); //Y
+    LOG.info("Setup application context success."); //Y
     return appContext;
   }
 
@@ -219,14 +219,14 @@ public class Client {
     // appState 返回False, 运行失败
     YarnApplicationState appState = appReport.getYarnApplicationState(); //Failed
 
-    LOG.info("====AppMaster host {} Start waiting application: {} ends.", appReport.getHost(), appId); //这里有问题: appReport.getHost()返回 N/A
+    LOG.info("AppMaster host {} Start waiting application: {} ends.", appReport.getHost(), appId); //这里有问题: appReport.getHost()返回 N/A
     while (appState != YarnApplicationState.FINISHED && appState != YarnApplicationState.KILLED
         && appState != YarnApplicationState.FAILED) {
       Thread.sleep(CHECK_APP_STATUS_INTERVAL);
       appReport = yarnClient.getApplicationReport(appId);
       appState = appReport.getYarnApplicationState();
     }
-    LOG.info("====Application {} finish with state {}", appId, appState);
+    LOG.info("Application {} finish with state {}", appId, appState);
     return appReport.getFinalApplicationStatus();
   }
 
@@ -234,7 +234,7 @@ public class Client {
     YarnClient yarnClient = YarnClient.createYarnClient(); //createYarnClient: YarnClient client = new YarnClientImpl(); return client.
     yarnClient.init(conf); // 继承自hadoop-common的基类, AbstractService
     yarnClient.start();
-    LOG.info("====Yarn client start success.");
+    LOG.info("Yarn client start success.");
     return yarnClient;
   }
 
@@ -243,17 +243,17 @@ public class Client {
     if (dependentFileList != null) {
       uploadFilesToHdfs(dependentFileList, basePath);
     }
-    LOG.info("====Upload user files success.");
+    LOG.info("Upload user files success.");
   }
 
   private void uploadFilesToHdfs(ArrayList<String> localFiles, String destPath) throws IOException {
-    LOG.info("====begin to upload files to hdfs");
+    LOG.info("begin to upload files to hdfs");
     Iterator<String> iter = localFiles.iterator();
     while (iter.hasNext()) {
       String fileName = iter.next();
       uploadLocalFileToHdfs(fileName, destPath);
     }
-    LOG.info("====finish uploading files to hdfs");
+    LOG.info("finish uploading files to hdfs");
   }
 
   private String uploadLocalFileToHdfs(String srcFilePath, String dstHdfsDir) throws IOException {
@@ -275,14 +275,14 @@ public class Client {
       Path dstFilePath = new Path(dstHdfsDir + "/" + fileName + ".tar.gz");
       fs.copyFromLocalFile(new Path(tarFileName), dstFilePath);
       fs.close();
-      LOG.info("====Upload file {} to {} success.", srcFilePath, dstFilePath.toString());
+      LOG.info("Upload file {} to {} success.", srcFilePath, dstFilePath.toString());
       return dstFilePath.toString();
     } else {
       fs.copyFromLocalFile(new Path(srcFilePath), new Path(dstHdfsDir));
       fs.close();
       String fileName = Utils.extractFileName(srcFilePath);
       String dstFilePath = Paths.get(dstHdfsDir, fileName).toString();
-      LOG.info("====Upload file {} to {} success.", srcFilePath, dstFilePath);
+      LOG.info("Upload file {} to {} success.", srcFilePath, dstFilePath);
       return dstFilePath;
     }
   }
@@ -292,7 +292,7 @@ public class Client {
     String command = "$JAVA_HOME/bin/java" + " -Xmx256M " + master + " -c=" + Utils.extractFileName(config) + " -v="
         + volumes + " -u=" + user + " -p=" + basePath + " 1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout"
         + " 2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr";
-    LOG.info("====ApplicationMaster start command is: [{}]", command);
+    LOG.info("ApplicationMaster start command is: [{}]", command);
     return command;
   }
 
@@ -313,7 +313,7 @@ public class Client {
     String classPathSeparator = System.getProperty("path.separator");
     for (String c : conf.getStrings(YarnConfiguration.YARN_APPLICATION_CLASSPATH,
         YarnConfiguration.DEFAULT_YARN_APPLICATION_CLASSPATH)) {
-      LOG.info("====Master add CLASSPATH:{}", c);
+      LOG.info("Master add CLASSPATH:{}", c);
       Apps.addToEnvironment(appMasterEnv, Environment.CLASSPATH.name(), c.trim(), classPathSeparator);
     }
 
@@ -336,14 +336,14 @@ public class Client {
   public void clear() {
     try {
       //Utils.removeHdfsDirs(conf, appBasePath);
-      LOG.info("====" + "logPath=" + appBasePath);
+      LOG.info("" + "logPath=" + appBasePath);
     } catch (Exception e) {
     }
     try {
       File tmp = new File(this.localTmpDir);
       if (tmp.exists()) {
         FileUtils.deleteDirectory(tmp);
-        LOG.info("====" + "localTmpDir=" + this.localTmpDir);
+        LOG.info("" + "localTmpDir=" + this.localTmpDir);
       }
     } catch (Exception e) {
     }
@@ -385,12 +385,12 @@ public class Client {
     } catch (Exception e) {
       success = false;
       e.printStackTrace();
-      LOG.info("====client.run() catch Exception e {}.", e);
+      LOG.info("client.run() catch Exception e {}.", e);
     } finally {
       client.clear();
     }
     if (!success) {
-      LOG.info("====client.run() returns FinalApplicationStatus state error, exit(1).");
+      LOG.info("client.run() returns FinalApplicationStatus state error, exit(1).");
       System.exit(1);
     }
   }
