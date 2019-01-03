@@ -299,6 +299,7 @@ public class DockerCmdBuilder {
   }
 
   private void bindVolumes(StringBuilder cmd) {
+    cmd.append(" -v=/usr/hdp:/usr/hdp");
     bindVolume(cmd, containerWorkDir, workDir, null);
     if (volumeDirs != null) {
       for (String dir : volumeDirs) {
