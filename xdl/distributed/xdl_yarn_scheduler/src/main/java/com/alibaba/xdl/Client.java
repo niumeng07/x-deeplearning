@@ -362,7 +362,7 @@ public class Client {
       System.exit(1);
     }
 
-    ArrayList<String> dependentFileList = Utils.splitString(cmd.getOptionValue("dependent-files", ""),
+    ArrayList<String> dependentFileList = Utils.splitString(cmd.getOptionValue("dependent-files", ","),
         Constants.OPTION_VALUE_SEPARATOR);
 
     final Client client = new Client(cmd.getOptionValue("config"), dependentFileList, cmd.getOptionValue("uuid", ""));
