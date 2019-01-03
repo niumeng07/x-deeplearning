@@ -300,6 +300,7 @@ public class DockerCmdBuilder {
 
   private void bindVolumes(StringBuilder cmd) {
     cmd.append(" -v=/usr/hdp:/usr/hdp");
+    cmd.append(" -v=/usr/share/aws/:/usr/share/aws/");
     bindVolume(cmd, containerWorkDir, workDir, null);
     if (volumeDirs != null) {
       for (String dir : volumeDirs) {
