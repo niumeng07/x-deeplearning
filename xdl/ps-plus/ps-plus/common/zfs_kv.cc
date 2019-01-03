@@ -81,7 +81,7 @@ class ZfsKV : public ReliableKV {
     if (iter != zks_.end()) {
       return iter->second.get();
     }
-    std::unique_ptr<ZkWrapper> zk(new ZkWrapper(zkaddr, 60));
+    std::unique_ptr<ZkWrapper> zk(new ZkWrapper(zkaddr, 10000));
     int retry = 3;
     while (true) {
       if (zk->Open()) {
