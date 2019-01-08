@@ -185,6 +185,9 @@ public class ContainerBase {
     String startCmd = genCmd();
     pullImage();
     int exitCode = 0;
+
+    LOG.info("startCmd of startXDL [{}]", startCmd);
+    
     try {
       processor = Runtime.getRuntime().exec(new String[] { "bash", "-c", startCmd });
       printStreamLog(processor);
