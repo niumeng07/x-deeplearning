@@ -335,15 +335,15 @@ public class Client {
 
   public void clear() {
     try {
-      //Utils.removeHdfsDirs(conf, appBasePath);
-      LOG.info("" + "logPath=" + appBasePath);
+      Utils.removeHdfsDirs(conf, appBasePath);
+      LOG.info("remove " + "logPath=" + appBasePath);
     } catch (Exception e) {
     }
     try {
       File tmp = new File(this.localTmpDir);
       if (tmp.exists()) {
         FileUtils.deleteDirectory(tmp);
-        LOG.info("" + "localTmpDir=" + this.localTmpDir);
+        LOG.info("delete " + "localTmpDir=" + this.localTmpDir);
       }
     } catch (Exception e) {
     }
