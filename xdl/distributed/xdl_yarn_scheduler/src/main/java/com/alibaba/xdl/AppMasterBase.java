@@ -148,6 +148,7 @@ public class AppMasterBase {
     if (subIndex >= 0) {
       fileName = config.substring(subIndex + 1);
     }
+    //basePath: hdfs://hdfscluster/user/mobdev/.xdl/application_id/
     Utils.writeHdfsFile(yarnConf, this.basePath, fileName, JSON.toJSONString(this.jobConf.getJobConf()));
   }
 

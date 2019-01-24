@@ -59,9 +59,12 @@ public class AppMasterRunner {
     String volumes = cmd.getOptionValue("volume");
 
     LOG.info("AppMasterRunner cmd.parse success, config {}, basePath {}, user {}, volumes {}.", config, basePath, user, volumes);
+    //AppMasterRunner cmd.parse success, config config.json, basePath hdfs://hdfscluster/user/mobdev/.xdl/application_1546428458056_0292/, user mobdev, volumes dist.tar.gz.
 
     SchedulerConf jobConf = Utils.parseSchedulerConf(config);
     LOG.info("AppMasterRunner jobConf, job_name {}, docker_image {}, script {}, dependent_dirs {}, scheduler_queue {}, min_finish_worker_num {}, min_finish_worker_rate {}, max_failover_times {}, max_local_failover_times {}, max_failover_wait_secs {}.", jobConf.job_name, jobConf.docker_image, jobConf.script, jobConf.dependent_dirs, jobConf.scheduler_queue, jobConf.min_finish_worker_num, jobConf.min_finish_worker_rate, jobConf.max_failover_times, jobConf.max_local_failover_times, jobConf.max_failover_wait_secs);
+    // AppMasterRunner jobConf, job_name xdl_test, docker_image niumeng07/rebuild_tf_xdl_zk_delcode, script deepctr.py, dependent_dirs /home/mobdev/liuda/xdl/xdl-test-submit/dist, scheduler_queue default, min_finish_worker_num 0, min_finish_worker_rate 90.0, max_failover_times 20, max_local_failover_times 3, max_failover_wait_secs 1800.
+    
     boolean balance_enable = false;
     String meta_dir = null;
     if (jobConf.auto_rebalance != null) {
@@ -70,8 +73,8 @@ public class AppMasterRunner {
     }
 
     AppMasterBase applicationMaster;
-    if (balance_enable == false || Utils.existsHdfsFile(conf, meta_dir)) {
-      LOG.info("AppMasterRunner applicationMaster is AppMasterBase.");
+    if (balance_enable == false || Utils.existsHdfsFile(conf, meta_dir)) { //若不开启balance_enable, 则并未判断existsHdfsFile
+      LOG.info("AppMasterRunner applicationMaster is AppMasterBase."); //Here
       applicationMaster = new AppMasterBase(basePath, user, config, volumes);
     } else {
       LOG.info("AppMasterRunner applicationMaster is PreAppMaster.");
@@ -86,7 +89,6 @@ public class AppMasterRunner {
       LOG.info("AppMasterRunner call applicationMaster.run().");
       Status status = applicationMaster.run();
       LOG.info("AppMasterRunner call applicationMaster.run() returns {}.", status);
-      LOG.info("AppMasterRunner call applicationMaster.dealWithExit({}).", status);
       applicationMaster.dealWithExit(status);
     } catch (Exception e) {
       LOG.error("run error!", e);
